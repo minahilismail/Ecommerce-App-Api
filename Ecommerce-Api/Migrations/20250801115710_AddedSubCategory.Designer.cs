@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecommerce_Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250801073111_SeedCategoryData")]
-    partial class SeedCategoryData
+    [Migration("20250801115710_AddedSubCategory")]
+    partial class AddedSubCategory
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,10 +48,15 @@ namespace Ecommerce_Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ParentCategoryId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ParentCategoryId");
 
                     b.ToTable("Categories");
 
@@ -60,7 +65,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 1,
                             Code = "ELEC",
-                            CreatedDate = new DateTime(2025, 8, 1, 12, 31, 11, 209, DateTimeKind.Local).AddTicks(9058),
+                            CreatedDate = new DateTime(2025, 8, 1, 16, 57, 10, 237, DateTimeKind.Local).AddTicks(3094),
                             Description = "Devices and gadgets",
                             Name = "Electronics",
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -69,7 +74,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 2,
                             Code = "JEWEL",
-                            CreatedDate = new DateTime(2025, 8, 1, 12, 31, 11, 209, DateTimeKind.Local).AddTicks(9074),
+                            CreatedDate = new DateTime(2025, 8, 1, 16, 57, 10, 237, DateTimeKind.Local).AddTicks(3109),
                             Description = "Jewellery and accessories",
                             Name = "Jewellery",
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -78,7 +83,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 3,
                             Code = "CLOTH",
-                            CreatedDate = new DateTime(2025, 8, 1, 12, 31, 11, 209, DateTimeKind.Local).AddTicks(9076),
+                            CreatedDate = new DateTime(2025, 8, 1, 16, 57, 10, 237, DateTimeKind.Local).AddTicks(3112),
                             Description = "Apparel and garments",
                             Name = "Clothing",
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -87,20 +92,37 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 4,
                             Code = "WOMEN",
-                            CreatedDate = new DateTime(2025, 8, 1, 12, 31, 11, 209, DateTimeKind.Local).AddTicks(9077),
+                            CreatedDate = new DateTime(2025, 8, 1, 16, 57, 10, 237, DateTimeKind.Local).AddTicks(3116),
                             Description = "Women's clothing and accessories",
                             Name = "Women",
+                            ParentCategoryId = 3,
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 5,
                             Code = "MEN",
-                            CreatedDate = new DateTime(2025, 8, 1, 12, 31, 11, 209, DateTimeKind.Local).AddTicks(9079),
+                            CreatedDate = new DateTime(2025, 8, 1, 16, 57, 10, 237, DateTimeKind.Local).AddTicks(3119),
                             Description = "Men's clothing and accessories",
                             Name = "Men",
+                            ParentCategoryId = 3,
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
+                });
+
+            modelBuilder.Entity("Ecommerce_Api.Models.Category", b =>
+                {
+                    b.HasOne("Ecommerce_Api.Models.Category", "ParentCategory")
+                        .WithMany("SubCategories")
+                        .HasForeignKey("ParentCategoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("ParentCategory");
+                });
+
+            modelBuilder.Entity("Ecommerce_Api.Models.Category", b =>
+                {
+                    b.Navigation("SubCategories");
                 });
 #pragma warning restore 612, 618
         }

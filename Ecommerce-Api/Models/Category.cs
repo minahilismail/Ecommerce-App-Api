@@ -1,4 +1,7 @@
-﻿namespace Ecommerce_Api.Models
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Ecommerce_Api.Models
 {
     public class Category
     {
@@ -8,5 +11,12 @@
         public string Description { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
+        // Parent-Child relationship properties
+        public int? ParentCategoryId { get; set; }
+
+        [ForeignKey("ParentCategoryId")]
+        public Category? ParentCategory { get; set; }
+
+        public ICollection<Category> SubCategories { get; set; } = new List<Category>();
     }
 }
