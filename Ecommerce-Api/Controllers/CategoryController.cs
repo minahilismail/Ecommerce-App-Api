@@ -158,6 +158,9 @@ namespace Ecommerce_Api.Controllers
                 Code = categoryDTO.Code,
                 Description = categoryDTO.Description,
                 ParentCategoryId = categoryDTO.ParentCategoryId,
+                ParentCategory = categoryDTO.ParentCategoryId.HasValue 
+                    ? _db.Categories.FirstOrDefault(c => c.Id == categoryDTO.ParentCategoryId.Value) 
+                    : null,
                 CreatedDate = DateTime.Now,
                 UpdatedDate = DateTime.Now
             };

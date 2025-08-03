@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Ecommerce_Api.Migrations
 {
     /// <inheritdoc />
-    public partial class AddedSubCategory : Migration
+    public partial class addinsertdataintable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -42,11 +42,11 @@ namespace Ecommerce_Api.Migrations
                 columns: new[] { "Id", "Code", "CreatedDate", "Description", "Name", "ParentCategoryId", "UpdatedDate" },
                 values: new object[,]
                 {
-                    { 1, "ELEC", new DateTime(2025, 8, 1, 16, 57, 10, 237, DateTimeKind.Local).AddTicks(3094), "Devices and gadgets", "Electronics", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, "JEWEL", new DateTime(2025, 8, 1, 16, 57, 10, 237, DateTimeKind.Local).AddTicks(3109), "Jewellery and accessories", "Jewellery", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 3, "CLOTH", new DateTime(2025, 8, 1, 16, 57, 10, 237, DateTimeKind.Local).AddTicks(3112), "Apparel and garments", "Clothing", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 4, "WOMEN", new DateTime(2025, 8, 1, 16, 57, 10, 237, DateTimeKind.Local).AddTicks(3116), "Women's clothing and accessories", "Women", 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 5, "MEN", new DateTime(2025, 8, 1, 16, 57, 10, 237, DateTimeKind.Local).AddTicks(3119), "Men's clothing and accessories", "Men", 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { 1, "ELEC", new DateTime(2025, 8, 2, 11, 14, 46, 305, DateTimeKind.Local).AddTicks(7341), "Devices and gadgets", "Electronics", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, "JEWEL", new DateTime(2025, 8, 2, 11, 14, 46, 305, DateTimeKind.Local).AddTicks(7354), "Jewellery and accessories", "Jewellery", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 3, "CLOTH", new DateTime(2025, 8, 2, 11, 14, 46, 305, DateTimeKind.Local).AddTicks(7356), "Apparel and garments", "Clothing", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 4, "WOMEN", new DateTime(2025, 8, 2, 11, 14, 46, 305, DateTimeKind.Local).AddTicks(7358), "Women's clothing and accessories", "Women", 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 5, "MEN", new DateTime(2025, 8, 2, 11, 14, 46, 305, DateTimeKind.Local).AddTicks(7359), "Men's clothing and accessories", "Men", 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.CreateIndex(

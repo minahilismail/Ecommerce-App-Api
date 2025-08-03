@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecommerce_Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250801115710_AddedSubCategory")]
-    partial class AddedSubCategory
+    [Migration("20250802061447_addinsertdataintable")]
+    partial class addinsertdataintable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -65,7 +65,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 1,
                             Code = "ELEC",
-                            CreatedDate = new DateTime(2025, 8, 1, 16, 57, 10, 237, DateTimeKind.Local).AddTicks(3094),
+                            CreatedDate = new DateTime(2025, 8, 2, 11, 14, 46, 305, DateTimeKind.Local).AddTicks(7341),
                             Description = "Devices and gadgets",
                             Name = "Electronics",
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -74,7 +74,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 2,
                             Code = "JEWEL",
-                            CreatedDate = new DateTime(2025, 8, 1, 16, 57, 10, 237, DateTimeKind.Local).AddTicks(3109),
+                            CreatedDate = new DateTime(2025, 8, 2, 11, 14, 46, 305, DateTimeKind.Local).AddTicks(7354),
                             Description = "Jewellery and accessories",
                             Name = "Jewellery",
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -83,7 +83,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 3,
                             Code = "CLOTH",
-                            CreatedDate = new DateTime(2025, 8, 1, 16, 57, 10, 237, DateTimeKind.Local).AddTicks(3112),
+                            CreatedDate = new DateTime(2025, 8, 2, 11, 14, 46, 305, DateTimeKind.Local).AddTicks(7356),
                             Description = "Apparel and garments",
                             Name = "Clothing",
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -92,7 +92,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 4,
                             Code = "WOMEN",
-                            CreatedDate = new DateTime(2025, 8, 1, 16, 57, 10, 237, DateTimeKind.Local).AddTicks(3116),
+                            CreatedDate = new DateTime(2025, 8, 2, 11, 14, 46, 305, DateTimeKind.Local).AddTicks(7358),
                             Description = "Women's clothing and accessories",
                             Name = "Women",
                             ParentCategoryId = 3,
@@ -102,7 +102,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 5,
                             Code = "MEN",
-                            CreatedDate = new DateTime(2025, 8, 1, 16, 57, 10, 237, DateTimeKind.Local).AddTicks(3119),
+                            CreatedDate = new DateTime(2025, 8, 2, 11, 14, 46, 305, DateTimeKind.Local).AddTicks(7359),
                             Description = "Men's clothing and accessories",
                             Name = "Men",
                             ParentCategoryId = 3,
