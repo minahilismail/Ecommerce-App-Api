@@ -195,12 +195,6 @@ namespace Ecommerce_Api.Controllers
                 return NotFound();
             }
 
-            // Check if category has subcategories
-            if (category.SubCategories.Any())
-            {
-                return BadRequest("Cannot delete category that has subcategories. Delete subcategories first.");
-            }
-
             _db.Categories.Remove(category);
             _db.SaveChanges();
             return NoContent();
