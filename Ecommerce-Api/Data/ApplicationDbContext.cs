@@ -42,8 +42,9 @@ namespace Ecommerce_Api.Data
                     Name = "Electronics",
                     Code = "ELEC",
                     Description = "Devices and gadgets",
+                    Level = 0,
                     CreatedDate = DateTime.Now,
-                    ParentCategoryId = null // Root category
+                    ParentCategoryId = -1 
                 },
                 new Category
                 {
@@ -51,8 +52,9 @@ namespace Ecommerce_Api.Data
                     Name = "Jewellery",
                     Code = "JEWEL",
                     Description = "Jewellery and accessories",
+                    Level = 0,
                     CreatedDate = DateTime.Now,
-                    ParentCategoryId = null // Root category
+                    ParentCategoryId = -1 
                 },
                 new Category
                 {
@@ -60,8 +62,9 @@ namespace Ecommerce_Api.Data
                     Name = "Clothing",
                     Code = "CLOTH",
                     Description = "Apparel and garments",
+                    Level = 0,
                     CreatedDate = DateTime.Now,
-                    ParentCategoryId = null // Root category
+                    ParentCategoryId = -1 
                 },
                 new Category
                 {
@@ -69,8 +72,9 @@ namespace Ecommerce_Api.Data
                     Name = "Women",
                     Code = "WOMEN",
                     Description = "Women's clothing and accessories",
+                    Level = 1,
                     CreatedDate = DateTime.Now,
-                    ParentCategoryId = 3 // Subcategory of Clothing
+                    ParentCategoryId = 3 
                 },
                 new Category
                 {
@@ -78,8 +82,19 @@ namespace Ecommerce_Api.Data
                     Name = "Men",
                     Code = "MEN",
                     Description = "Men's clothing and accessories",
+                    Level = 1,
                     CreatedDate = DateTime.Now,
-                    ParentCategoryId = 3 // Subcategory of Clothing
+                    ParentCategoryId = 3
+                },
+                new Category
+                {
+                    Id = 6,
+                    Name = "T-Shirts",
+                    Code = "TS",
+                    Description = "Men's T-Shirts",
+                    Level = 2,
+                    CreatedDate = DateTime.Now,
+                    ParentCategoryId = 5
                 }
             );
 

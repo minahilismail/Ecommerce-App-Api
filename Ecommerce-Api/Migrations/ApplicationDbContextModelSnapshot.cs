@@ -41,6 +41,9 @@ namespace Ecommerce_Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Level")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -69,8 +72,9 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 1,
                             Code = "ELEC",
-                            CreatedDate = new DateTime(2025, 8, 4, 11, 53, 31, 409, DateTimeKind.Local).AddTicks(7932),
+                            CreatedDate = new DateTime(2025, 8, 4, 16, 19, 34, 48, DateTimeKind.Local).AddTicks(3779),
                             Description = "Devices and gadgets",
+                            Level = 0,
                             Name = "Electronics",
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -78,8 +82,9 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 2,
                             Code = "JEWEL",
-                            CreatedDate = new DateTime(2025, 8, 4, 11, 53, 31, 409, DateTimeKind.Local).AddTicks(7946),
+                            CreatedDate = new DateTime(2025, 8, 4, 16, 19, 34, 48, DateTimeKind.Local).AddTicks(3793),
                             Description = "Jewellery and accessories",
+                            Level = 0,
                             Name = "Jewellery",
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -87,8 +92,9 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 3,
                             Code = "CLOTH",
-                            CreatedDate = new DateTime(2025, 8, 4, 11, 53, 31, 409, DateTimeKind.Local).AddTicks(7949),
+                            CreatedDate = new DateTime(2025, 8, 4, 16, 19, 34, 48, DateTimeKind.Local).AddTicks(3796),
                             Description = "Apparel and garments",
+                            Level = 0,
                             Name = "Clothing",
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -96,8 +102,9 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 4,
                             Code = "WOMEN",
-                            CreatedDate = new DateTime(2025, 8, 4, 11, 53, 31, 409, DateTimeKind.Local).AddTicks(7951),
+                            CreatedDate = new DateTime(2025, 8, 4, 16, 19, 34, 48, DateTimeKind.Local).AddTicks(3798),
                             Description = "Women's clothing and accessories",
+                            Level = 1,
                             Name = "Women",
                             ParentCategoryId = 3,
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -106,10 +113,22 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 5,
                             Code = "MEN",
-                            CreatedDate = new DateTime(2025, 8, 4, 11, 53, 31, 409, DateTimeKind.Local).AddTicks(7953),
+                            CreatedDate = new DateTime(2025, 8, 4, 16, 19, 34, 48, DateTimeKind.Local).AddTicks(3800),
                             Description = "Men's clothing and accessories",
+                            Level = 1,
                             Name = "Men",
                             ParentCategoryId = 3,
+                            UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Code = "TS",
+                            CreatedDate = new DateTime(2025, 8, 4, 16, 19, 34, 48, DateTimeKind.Local).AddTicks(3802),
+                            Description = "Men's T-Shirts",
+                            Level = 2,
+                            Name = "T-Shirts",
+                            ParentCategoryId = 5,
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });

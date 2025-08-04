@@ -9,6 +9,7 @@ namespace Ecommerce_Api.Models
         public string Name { get; set; }
         public string Code { get; set; }
         public string Description { get; set; }
+        public int Level { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
         // Parent-Child relationship properties
