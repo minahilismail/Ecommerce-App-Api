@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Ecommerce_Api.Migrations
 {
     /// <inheritdoc />
-    public partial class addinsertdataintable : Migration
+    public partial class dbConstraint : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,8 +19,8 @@ namespace Ecommerce_Api.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -42,12 +42,25 @@ namespace Ecommerce_Api.Migrations
                 columns: new[] { "Id", "Code", "CreatedDate", "Description", "Name", "ParentCategoryId", "UpdatedDate" },
                 values: new object[,]
                 {
-                    { 1, "ELEC", new DateTime(2025, 8, 2, 11, 14, 46, 305, DateTimeKind.Local).AddTicks(7341), "Devices and gadgets", "Electronics", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, "JEWEL", new DateTime(2025, 8, 2, 11, 14, 46, 305, DateTimeKind.Local).AddTicks(7354), "Jewellery and accessories", "Jewellery", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 3, "CLOTH", new DateTime(2025, 8, 2, 11, 14, 46, 305, DateTimeKind.Local).AddTicks(7356), "Apparel and garments", "Clothing", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 4, "WOMEN", new DateTime(2025, 8, 2, 11, 14, 46, 305, DateTimeKind.Local).AddTicks(7358), "Women's clothing and accessories", "Women", 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 5, "MEN", new DateTime(2025, 8, 2, 11, 14, 46, 305, DateTimeKind.Local).AddTicks(7359), "Men's clothing and accessories", "Men", 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { 1, "ELEC", new DateTime(2025, 8, 4, 10, 20, 20, 958, DateTimeKind.Local).AddTicks(8939), "Devices and gadgets", "Electronics", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, "JEWEL", new DateTime(2025, 8, 4, 10, 20, 20, 958, DateTimeKind.Local).AddTicks(8969), "Jewellery and accessories", "Jewellery", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 3, "CLOTH", new DateTime(2025, 8, 4, 10, 20, 20, 958, DateTimeKind.Local).AddTicks(8974), "Apparel and garments", "Clothing", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 4, "WOMEN", new DateTime(2025, 8, 4, 10, 20, 20, 958, DateTimeKind.Local).AddTicks(8978), "Women's clothing and accessories", "Women", 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 5, "MEN", new DateTime(2025, 8, 4, 10, 20, 20, 958, DateTimeKind.Local).AddTicks(8983), "Men's clothing and accessories", "Men", 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Categories_Code",
+                table: "Categories",
+                column: "Code",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Categories_Name_ParentCategoryId",
+                table: "Categories",
+                columns: new[] { "Name", "ParentCategoryId" },
+                unique: true,
+                filter: "[ParentCategoryId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Categories_ParentCategoryId",

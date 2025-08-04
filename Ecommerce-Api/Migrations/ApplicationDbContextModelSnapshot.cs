@@ -32,7 +32,7 @@ namespace Ecommerce_Api.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -43,7 +43,7 @@ namespace Ecommerce_Api.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("ParentCategoryId")
                         .HasColumnType("int");
@@ -53,7 +53,14 @@ namespace Ecommerce_Api.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Code")
+                        .IsUnique();
+
                     b.HasIndex("ParentCategoryId");
+
+                    b.HasIndex("Name", "ParentCategoryId")
+                        .IsUnique()
+                        .HasFilter("[ParentCategoryId] IS NOT NULL");
 
                     b.ToTable("Categories");
 
@@ -62,7 +69,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 1,
                             Code = "ELEC",
-                            CreatedDate = new DateTime(2025, 8, 2, 11, 14, 46, 305, DateTimeKind.Local).AddTicks(7341),
+                            CreatedDate = new DateTime(2025, 8, 4, 10, 20, 20, 958, DateTimeKind.Local).AddTicks(8939),
                             Description = "Devices and gadgets",
                             Name = "Electronics",
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -71,7 +78,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 2,
                             Code = "JEWEL",
-                            CreatedDate = new DateTime(2025, 8, 2, 11, 14, 46, 305, DateTimeKind.Local).AddTicks(7354),
+                            CreatedDate = new DateTime(2025, 8, 4, 10, 20, 20, 958, DateTimeKind.Local).AddTicks(8969),
                             Description = "Jewellery and accessories",
                             Name = "Jewellery",
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -80,7 +87,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 3,
                             Code = "CLOTH",
-                            CreatedDate = new DateTime(2025, 8, 2, 11, 14, 46, 305, DateTimeKind.Local).AddTicks(7356),
+                            CreatedDate = new DateTime(2025, 8, 4, 10, 20, 20, 958, DateTimeKind.Local).AddTicks(8974),
                             Description = "Apparel and garments",
                             Name = "Clothing",
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
@@ -89,7 +96,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 4,
                             Code = "WOMEN",
-                            CreatedDate = new DateTime(2025, 8, 2, 11, 14, 46, 305, DateTimeKind.Local).AddTicks(7358),
+                            CreatedDate = new DateTime(2025, 8, 4, 10, 20, 20, 958, DateTimeKind.Local).AddTicks(8978),
                             Description = "Women's clothing and accessories",
                             Name = "Women",
                             ParentCategoryId = 3,
@@ -99,7 +106,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 5,
                             Code = "MEN",
-                            CreatedDate = new DateTime(2025, 8, 2, 11, 14, 46, 305, DateTimeKind.Local).AddTicks(7359),
+                            CreatedDate = new DateTime(2025, 8, 4, 10, 20, 20, 958, DateTimeKind.Local).AddTicks(8983),
                             Description = "Men's clothing and accessories",
                             Name = "Men",
                             ParentCategoryId = 3,
