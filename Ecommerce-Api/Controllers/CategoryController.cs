@@ -2,6 +2,7 @@
 using Ecommerce_Api.Models;
 using Ecommerce_Api.Models.Dto;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -57,7 +58,7 @@ namespace Ecommerce_Api.Controllers
         public ActionResult<IEnumerable<CategoryDTO>> GetRootCategories()
         {
             var rootCategories = _db.Categories
-                .Where(c => c.ParentCategoryId==null)
+                .Where(c => c.ParentCategoryId == null)
                 .Include(c => c.SubCategories)
                 .ToList();
 
@@ -170,7 +171,7 @@ namespace Ecommerce_Api.Controllers
                 Code = categoryDTO.Code,
                 Description = categoryDTO.Description,
                 ParentCategoryId = categoryDTO.ParentCategoryId,
-                StatusId = categoryDTO.StatusId,
+                StatusId = categoryDTO.StatusId ?? 1,
                 Level = categoryDTO.Level,
                 ParentCategory = categoryDTO.ParentCategoryId.HasValue
                 ? _db.Categories.FirstOrDefault(c => c.Id == categoryDTO.ParentCategoryId.Value)
@@ -193,7 +194,7 @@ namespace Ecommerce_Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult DeleteVilla(int id)
+        public IActionResult DeleteCategory(int id)
         {
             if (id == 0)
             {
@@ -276,7 +277,7 @@ namespace Ecommerce_Api.Controllers
                 .Where(c => c.StatusId == statusId)
                 .ToList();
 
-    
+
 
             var categoryDTOs = categories.Select(category => new CategoryDTO
             {
@@ -302,5 +303,39 @@ namespace Ecommerce_Api.Controllers
 
             return Ok(categoryDTOs);
         }
+
+        [HttpPatch("{id:int}/status/{statusId:int}", Name = "UpdateCategoryStatus")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult UpdateCategoryStatus(int id, int statusId)
+        {
+
+            // Validate statusId exists first
+            var statusExists = _db.Status.Any(s => s.Id == statusId);
+            if (!statusExists)
+            {
+                ModelState.AddModelError("StatusId", "Status does not exist.");
+                return BadRequest(ModelState);
+            }
+
+            var category = _db.Categories.FirstOrDefault(c => c.Id == id);
+            if (category == null)
+            {
+                return NotFound($"Category with ID {id} not found.");
+            }
+
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            category.StatusId = statusId;
+            category.UpdatedDate = DateTime.Now;
+
+            _db.SaveChanges();
+            return NoContent();
         }
+    }
 }
