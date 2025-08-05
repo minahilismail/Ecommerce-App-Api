@@ -35,13 +35,17 @@ namespace Ecommerce_Api.Controllers
                 Description = c.Description,
                 ParentCategoryId = c.ParentCategoryId,
                 ParentCategoryName = c.ParentCategory?.Name,
+                StatusId = c.StatusId,
+                Level = c.Level,
                 SubCategories = c.SubCategories.Select(sub => new CategoryDTO
                 {
                     Id = sub.Id,
                     Name = sub.Name,
                     Code = sub.Code,
                     Description = sub.Description,
-                    ParentCategoryId = sub.ParentCategoryId
+                    ParentCategoryId = sub.ParentCategoryId,
+                    StatusId = sub.StatusId,
+                    Level = sub.Level
                 }).ToList()
             }).ToList();
 
@@ -64,13 +68,17 @@ namespace Ecommerce_Api.Controllers
                 Code = c.Code,
                 Description = c.Description,
                 ParentCategoryId = c.ParentCategoryId,
+                StatusId = c.StatusId,
+                Level = c.Level,
                 SubCategories = c.SubCategories.Select(sub => new CategoryDTO
                 {
                     Id = sub.Id,
                     Name = sub.Name,
                     Code = sub.Code,
                     Description = sub.Description,
-                    ParentCategoryId = sub.ParentCategoryId
+                    ParentCategoryId = sub.ParentCategoryId,
+                    StatusId = sub.StatusId,
+                    Level = sub.Level,
                 }).ToList()
             }).ToList();
 
@@ -106,13 +114,17 @@ namespace Ecommerce_Api.Controllers
                 Description = category.Description,
                 ParentCategoryId = category.ParentCategoryId,
                 ParentCategoryName = category.ParentCategory?.Name,
+                StatusId = category.StatusId,
+                Level = category.Level,
                 SubCategories = category.SubCategories.Select(sub => new CategoryDTO
                 {
                     Id = sub.Id,
                     Name = sub.Name,
                     Code = sub.Code,
                     Description = sub.Description,
-                    ParentCategoryId = sub.ParentCategoryId
+                    ParentCategoryId = sub.ParentCategoryId,
+                    StatusId = sub.StatusId,
+                    Level = sub.Level
                 }).ToList()
             };
 
@@ -158,6 +170,8 @@ namespace Ecommerce_Api.Controllers
                 Code = categoryDTO.Code,
                 Description = categoryDTO.Description,
                 ParentCategoryId = categoryDTO.ParentCategoryId,
+                StatusId = categoryDTO.StatusId,
+                Level = categoryDTO.Level,
                 ParentCategory = categoryDTO.ParentCategoryId.HasValue
                 ? _db.Categories.FirstOrDefault(c => c.Id == categoryDTO.ParentCategoryId.Value)
                 : null,
@@ -235,6 +249,8 @@ namespace Ecommerce_Api.Controllers
                 Code = categoryDTO.Code,
                 Description = categoryDTO.Description,
                 ParentCategoryId = categoryDTO.ParentCategoryId,
+                StatusId = categoryDTO.StatusId,
+                Level = categoryDTO.Level,
                 UpdatedDate = DateTime.Now
             };
 
@@ -242,5 +258,49 @@ namespace Ecommerce_Api.Controllers
             _db.SaveChanges();
             return NoContent();
         }
-    }
+
+        [HttpGet("status/{statusId:int}", Name = "GetCategoryByStatusId")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult<CategoryDTO> GetCategoryByStatusId(int statusId)
+        {
+            if (statusId == 0)
+            {
+                return BadRequest("Invalid Status Id.");
+            }
+
+            var categories = _db.Categories
+                .Include(c => c.ParentCategory)
+                .Include(c => c.SubCategories)
+                .Where(c => c.StatusId == statusId)
+                .ToList();
+
+    
+
+            var categoryDTOs = categories.Select(category => new CategoryDTO
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Code = category.Code,
+                Description = category.Description,
+                ParentCategoryId = category.ParentCategoryId,
+                ParentCategoryName = category.ParentCategory?.Name,
+                Level = category.Level,
+                StatusId = category.StatusId,
+                SubCategories = category.SubCategories.Select(sub => new CategoryDTO
+                {
+                    Id = sub.Id,
+                    Name = sub.Name,
+                    Code = sub.Code,
+                    Description = sub.Description,
+                    ParentCategoryId = sub.ParentCategoryId,
+                    StatusId = sub.StatusId,
+                    Level = sub.Level
+                }).ToList()
+            }).ToList();
+
+            return Ok(categoryDTOs);
+        }
+        }
 }

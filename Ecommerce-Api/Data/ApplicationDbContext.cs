@@ -11,6 +11,7 @@ namespace Ecommerce_Api.Data
         }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Status> Status { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,12 +36,36 @@ namespace Ecommerce_Api.Data
             modelBuilder.Entity<Category>()
                 .HasIndex(c => c.Code)
                 .IsUnique();
+            modelBuilder.Entity<Status>()
+                .HasIndex(s => s.Name)
+                .IsUnique();
 
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.Category)
                 .WithMany()
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Status>().HasData(
+                new Status
+                {
+                    Id = 1,
+                    Name = "Active",
+                    
+                },
+                new Status
+                {
+                    Id = 2,
+                    Name = "Archived",
+
+                },
+                new Status
+                {
+                    Id = 3,
+                    Name = "Deleted",
+
+                }
+            );
 
             modelBuilder.Entity<Category>().HasData(
                 new Category
@@ -51,7 +76,8 @@ namespace Ecommerce_Api.Data
                     Description = "Devices and gadgets",
                     Level = 0,
                     CreatedDate = DateTime.Now,
-                    ParentCategoryId = null
+                    ParentCategoryId = null,
+                    StatusId = 2
                 },
                 new Category
                 {
@@ -61,7 +87,8 @@ namespace Ecommerce_Api.Data
                     Description = "Jewellery and accessories",
                     Level = 0,
                     CreatedDate = DateTime.Now,
-                    ParentCategoryId = null
+                    ParentCategoryId = null,
+                    StatusId = 1
                 },
                 new Category
                 {
@@ -71,7 +98,8 @@ namespace Ecommerce_Api.Data
                     Description = "Apparel and garments",
                     Level = 0,
                     CreatedDate = DateTime.Now,
-                    ParentCategoryId = null
+                    ParentCategoryId = null,
+                    StatusId = 1
                 },
                 new Category
                 {
@@ -81,7 +109,8 @@ namespace Ecommerce_Api.Data
                     Description = "Women's clothing and accessories",
                     Level = 1,
                     CreatedDate = DateTime.Now,
-                    ParentCategoryId = 3 
+                    ParentCategoryId = 3,
+                    StatusId = 1
                 },
                 new Category
                 {
@@ -91,7 +120,8 @@ namespace Ecommerce_Api.Data
                     Description = "Men's clothing and accessories",
                     Level = 1,
                     CreatedDate = DateTime.Now,
-                    ParentCategoryId = 3
+                    ParentCategoryId = 3,
+                    StatusId = 1
                 },
                 new Category
                 {
@@ -101,7 +131,8 @@ namespace Ecommerce_Api.Data
                     Description = "Men's T-Shirts",
                     Level = 2,
                     CreatedDate = DateTime.Now,
-                    ParentCategoryId = 5
+                    ParentCategoryId = 5,
+                    StatusId = 1
                 }
             );
 

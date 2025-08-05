@@ -14,9 +14,12 @@ namespace Ecommerce_Api.Models
         public DateTime UpdatedDate { get; set; }
         // Parent-Child relationship properties
         public int? ParentCategoryId { get; set; }
+        public int? StatusId { get; set; } = 1;
 
         [ForeignKey("ParentCategoryId")]
         public Category? ParentCategory { get; set; }
+        [ForeignKey("StatusId")]
+        public Status Status { get; set; }
 
         public ICollection<Category> SubCategories { get; set; } = new List<Category>();
     }
