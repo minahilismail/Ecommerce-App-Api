@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Ecommerce_Api.Migrations
 {
     /// <inheritdoc />
-    public partial class createInsertProductsCategoriesTable : Migration
+    public partial class addinsertcategoryandproducttable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -66,11 +66,11 @@ namespace Ecommerce_Api.Migrations
                 columns: new[] { "Id", "Code", "CreatedDate", "Description", "Level", "Name", "ParentCategoryId", "UpdatedDate" },
                 values: new object[,]
                 {
-                    { 1, "ELEC", new DateTime(2025, 8, 4, 16, 19, 34, 48, DateTimeKind.Local).AddTicks(3779), "Devices and gadgets", 0, "Electronics", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, "JEWEL", new DateTime(2025, 8, 4, 16, 19, 34, 48, DateTimeKind.Local).AddTicks(3793), "Jewellery and accessories", 0, "Jewellery", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 3, "CLOTH", new DateTime(2025, 8, 4, 16, 19, 34, 48, DateTimeKind.Local).AddTicks(3796), "Apparel and garments", 0, "Clothing", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 4, "WOMEN", new DateTime(2025, 8, 4, 16, 19, 34, 48, DateTimeKind.Local).AddTicks(3798), "Women's clothing and accessories", 1, "Women", 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 5, "MEN", new DateTime(2025, 8, 4, 16, 19, 34, 48, DateTimeKind.Local).AddTicks(3800), "Men's clothing and accessories", 1, "Men", 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { 1, "ELEC", new DateTime(2025, 8, 5, 10, 32, 28, 582, DateTimeKind.Local).AddTicks(1529), "Devices and gadgets", 0, "Electronics", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, "JEWEL", new DateTime(2025, 8, 5, 10, 32, 28, 582, DateTimeKind.Local).AddTicks(1539), "Jewellery and accessories", 0, "Jewellery", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 3, "CLOTH", new DateTime(2025, 8, 5, 10, 32, 28, 582, DateTimeKind.Local).AddTicks(1542), "Apparel and garments", 0, "Clothing", null, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 4, "WOMEN", new DateTime(2025, 8, 5, 10, 32, 28, 582, DateTimeKind.Local).AddTicks(1545), "Women's clothing and accessories", 1, "Women", 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 5, "MEN", new DateTime(2025, 8, 5, 10, 32, 28, 582, DateTimeKind.Local).AddTicks(1547), "Men's clothing and accessories", 1, "Men", 3, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.InsertData(
@@ -85,7 +85,7 @@ namespace Ecommerce_Api.Migrations
             migrationBuilder.InsertData(
                 table: "Categories",
                 columns: new[] { "Id", "Code", "CreatedDate", "Description", "Level", "Name", "ParentCategoryId", "UpdatedDate" },
-                values: new object[] { 6, "TS", new DateTime(2025, 8, 4, 16, 19, 34, 48, DateTimeKind.Local).AddTicks(3802), "Men's T-Shirts", 2, "T-Shirts", 5, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) });
+                values: new object[] { 6, "TS", new DateTime(2025, 8, 5, 10, 32, 28, 582, DateTimeKind.Local).AddTicks(1549), "Men's T-Shirts", 2, "T-Shirts", 5, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) });
 
             migrationBuilder.InsertData(
                 table: "Products",

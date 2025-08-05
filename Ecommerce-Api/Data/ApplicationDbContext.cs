@@ -19,7 +19,14 @@ namespace Ecommerce_Api.Data
                 .HasOne(c => c.ParentCategory)
                 .WithMany(c => c.SubCategories)
                 .HasForeignKey(c => c.ParentCategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired(false);
+
+            //// Check constraint to ensure ParentCategoryId is either -1 or references existing category
+            //modelBuilder.Entity<Category>()
+            //    .ToTable(t => t.HasCheckConstraint("CK_Category_ParentCategoryId",
+            //        "[ParentCategoryId] = -1 OR [ParentCategoryId] IN (SELECT [Id] FROM [Categories])"));
+
 
             modelBuilder.Entity<Category>()
                 .HasIndex(c => new { c.Name, c.ParentCategoryId })
@@ -44,7 +51,7 @@ namespace Ecommerce_Api.Data
                     Description = "Devices and gadgets",
                     Level = 0,
                     CreatedDate = DateTime.Now,
-                    ParentCategoryId = -1 
+                    ParentCategoryId = null
                 },
                 new Category
                 {
@@ -54,7 +61,7 @@ namespace Ecommerce_Api.Data
                     Description = "Jewellery and accessories",
                     Level = 0,
                     CreatedDate = DateTime.Now,
-                    ParentCategoryId = -1 
+                    ParentCategoryId = null
                 },
                 new Category
                 {
@@ -64,7 +71,7 @@ namespace Ecommerce_Api.Data
                     Description = "Apparel and garments",
                     Level = 0,
                     CreatedDate = DateTime.Now,
-                    ParentCategoryId = -1 
+                    ParentCategoryId = null
                 },
                 new Category
                 {

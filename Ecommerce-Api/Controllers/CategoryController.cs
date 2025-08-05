@@ -53,7 +53,7 @@ namespace Ecommerce_Api.Controllers
         public ActionResult<IEnumerable<CategoryDTO>> GetRootCategories()
         {
             var rootCategories = _db.Categories
-                .Where(c => c.ParentCategoryId == -1)
+                .Where(c => c.ParentCategoryId==null)
                 .Include(c => c.SubCategories)
                 .ToList();
 
@@ -142,7 +142,7 @@ namespace Ecommerce_Api.Controllers
             }
 
             // Validate parent category exists if ParentCategoryId is provided
-            if (categoryDTO.ParentCategoryId != -1)
+            if (categoryDTO.ParentCategoryId.HasValue)
             {
                 var parentExists = _db.Categories.Any(c => c.Id == categoryDTO.ParentCategoryId.Value);
                 if (!parentExists)
@@ -158,9 +158,9 @@ namespace Ecommerce_Api.Controllers
                 Code = categoryDTO.Code,
                 Description = categoryDTO.Description,
                 ParentCategoryId = categoryDTO.ParentCategoryId,
-                ParentCategory = categoryDTO.ParentCategoryId != -1
-                    ? _db.Categories.FirstOrDefault(c => c.Id == categoryDTO.ParentCategoryId)
-                    : null,
+                ParentCategory = categoryDTO.ParentCategoryId.HasValue
+                ? _db.Categories.FirstOrDefault(c => c.Id == categoryDTO.ParentCategoryId.Value)
+                : null,
                 CreatedDate = DateTime.Now,
                 UpdatedDate = DateTime.Now
             };
