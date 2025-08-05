@@ -185,10 +185,7 @@ namespace Ecommerce_Api.Controllers
                 .Include(p => p.Category)
                 .Where(p => p.CategoryId == categoryId)
                 .ToList();
-            if (!products.Any())
-            {
-                return NotFound($"No products found for category ID {categoryId}.");
-            }
+
             var productDTOs = products.Select(p => new ProductDTO
             {
                 Id = p.Id,

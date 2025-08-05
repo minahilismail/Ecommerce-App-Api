@@ -242,6 +242,12 @@ namespace Ecommerce_Api.Controllers
                     return BadRequest(ModelState);
                 }
             }
+            //verify if any existing category contains the same name or code
+            if (_db.Categories.Any(c => c.Id != id && (c.Name.ToLower() == categoryDTO.Name.ToLower() || c.Code.ToLower() == categoryDTO.Code.ToLower())))
+            {
+                ModelState.AddModelError("CustomError", "Category with the same name or code already exists!");
+                return BadRequest(ModelState);
+            }
 
             Category model = new()
             {
