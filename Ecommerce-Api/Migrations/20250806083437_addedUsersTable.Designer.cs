@@ -4,6 +4,7 @@ using Ecommerce_Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecommerce_Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250806083437_addedUsersTable")]
+    partial class addedUsersTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,7 +80,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 1,
                             Code = "ELEC",
-                            CreatedDate = new DateTime(2025, 8, 6, 15, 19, 20, 70, DateTimeKind.Local).AddTicks(268),
+                            CreatedDate = new DateTime(2025, 8, 6, 13, 34, 36, 751, DateTimeKind.Local).AddTicks(7097),
                             Description = "Devices and gadgets",
                             Level = 0,
                             Name = "Electronics",
@@ -88,7 +91,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 2,
                             Code = "JEWEL",
-                            CreatedDate = new DateTime(2025, 8, 6, 15, 19, 20, 70, DateTimeKind.Local).AddTicks(280),
+                            CreatedDate = new DateTime(2025, 8, 6, 13, 34, 36, 751, DateTimeKind.Local).AddTicks(7112),
                             Description = "Jewellery and accessories",
                             Level = 0,
                             Name = "Jewellery",
@@ -99,7 +102,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 3,
                             Code = "CLOTH",
-                            CreatedDate = new DateTime(2025, 8, 6, 15, 19, 20, 70, DateTimeKind.Local).AddTicks(282),
+                            CreatedDate = new DateTime(2025, 8, 6, 13, 34, 36, 751, DateTimeKind.Local).AddTicks(7114),
                             Description = "Apparel and garments",
                             Level = 0,
                             Name = "Clothing",
@@ -110,7 +113,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 4,
                             Code = "WOMEN",
-                            CreatedDate = new DateTime(2025, 8, 6, 15, 19, 20, 70, DateTimeKind.Local).AddTicks(283),
+                            CreatedDate = new DateTime(2025, 8, 6, 13, 34, 36, 751, DateTimeKind.Local).AddTicks(7116),
                             Description = "Women's clothing and accessories",
                             Level = 1,
                             Name = "Women",
@@ -122,7 +125,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 5,
                             Code = "MEN",
-                            CreatedDate = new DateTime(2025, 8, 6, 15, 19, 20, 70, DateTimeKind.Local).AddTicks(285),
+                            CreatedDate = new DateTime(2025, 8, 6, 13, 34, 36, 751, DateTimeKind.Local).AddTicks(7118),
                             Description = "Men's clothing and accessories",
                             Level = 1,
                             Name = "Men",
@@ -134,7 +137,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 6,
                             Code = "TS",
-                            CreatedDate = new DateTime(2025, 8, 6, 15, 19, 20, 70, DateTimeKind.Local).AddTicks(286),
+                            CreatedDate = new DateTime(2025, 8, 6, 13, 34, 36, 751, DateTimeKind.Local).AddTicks(7121),
                             Description = "Men's T-Shirts",
                             Level = 2,
                             Name = "T-Shirts",
@@ -226,59 +229,6 @@ namespace Ecommerce_Api.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Ecommerce_Api.Models.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int?>("ParentRoleId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Uid")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ParentRoleId");
-
-                    b.HasIndex("Uid")
-                        .IsUnique();
-
-                    b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "User",
-                            Uid = "USER"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Seller",
-                            ParentRoleId = 1,
-                            Uid = "SELLER"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Administrator",
-                            ParentRoleId = 2,
-                            Uid = "ADMINISTRATOR"
-                        });
-                });
-
             modelBuilder.Entity("Ecommerce_Api.Models.Status", b =>
                 {
                     b.Property<int>("Id")
@@ -338,23 +288,12 @@ namespace Ecommerce_Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("RoleId");
-
-                    b.HasIndex("Username")
-                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -384,27 +323,6 @@ namespace Ecommerce_Api.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("Ecommerce_Api.Models.Role", b =>
-                {
-                    b.HasOne("Ecommerce_Api.Models.Role", "ParentRole")
-                        .WithMany()
-                        .HasForeignKey("ParentRoleId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("ParentRole");
-                });
-
-            modelBuilder.Entity("Ecommerce_Api.Models.User", b =>
-                {
-                    b.HasOne("Ecommerce_Api.Models.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Ecommerce_Api.Models.Category", b =>

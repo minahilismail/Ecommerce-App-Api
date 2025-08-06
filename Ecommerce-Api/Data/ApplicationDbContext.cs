@@ -12,6 +12,8 @@ namespace Ecommerce_Api.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Status> Status { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -44,6 +46,41 @@ namespace Ecommerce_Api.Data
                 .HasOne(p => p.Category)
                 .WithMany()
                 .HasForeignKey(p => p.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // User configurations
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Username)
+                .IsUnique();
+
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Role);
+            
+            
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Role)
+                .WithMany()
+                .HasForeignKey(u => u.RoleId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Role configurations
+            modelBuilder.Entity<Role>()
+                .HasIndex(r => r.Uid)
+                .IsUnique();
+
+            modelBuilder.Entity<Role>()
+                .HasOne(r => r.ParentRole);
+                
+
+            
+            modelBuilder.Entity<Role>()
+                .HasOne(r => r.ParentRole)
+                .WithMany()
+                .HasForeignKey(r => r.ParentRoleId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Status>().HasData(
@@ -184,6 +221,13 @@ namespace Ecommerce_Api.Data
                 }
             );
 
+            modelBuilder.Entity<Role>().HasData(
+                new Role { Id = 1, Name = "User", Uid = "USER", ParentRoleId = null },
+                new Role { Id = 2, Name = "Seller", Uid = "SELLER", ParentRoleId = 1 },
+                new Role { Id = 3, Name = "Administrator", Uid = "ADMINISTRATOR", ParentRoleId = 2 }
+            );
+
+            
 
         }
 
