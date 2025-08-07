@@ -1,6 +1,7 @@
 ﻿using Ecommerce_Api.Data;
 using Ecommerce_Api.Models;
 using Ecommerce_Api.Models.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -131,7 +132,7 @@ namespace Ecommerce_Api.Controllers
 
             return Ok(categoryDTO);
         }
-
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -189,7 +190,7 @@ namespace Ecommerce_Api.Controllers
 
 
 
-
+        [Authorize(Roles = "Administrator")]
         [HttpDelete("{id:int}", Name = "DeleteCategory")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -214,7 +215,7 @@ namespace Ecommerce_Api.Controllers
             _db.SaveChanges();
             return NoContent();
         }
-
+        [Authorize(Roles = "Administrator")]
         [HttpPut("{id:int}", Name = "UpdateCategory")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -310,6 +311,7 @@ namespace Ecommerce_Api.Controllers
             return Ok(categoryDTOs);
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpPatch("{id:int}/status/{statusId:int}", Name = "UpdateCategoryStatus")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

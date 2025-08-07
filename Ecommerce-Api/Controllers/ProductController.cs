@@ -1,6 +1,7 @@
 ﻿using Ecommerce_Api.Data;
 using Ecommerce_Api.Models;
 using Ecommerce_Api.Models.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -72,7 +73,7 @@ namespace Ecommerce_Api.Controllers
 
             return Ok(productDTO);
         }
-
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -112,7 +113,7 @@ namespace Ecommerce_Api.Controllers
             productDTO.Id = model.Id;
             return CreatedAtRoute("GetProduct", new { id = model.Id }, productDTO);
         }
-
+        [Authorize(Roles = "Administrator")]
         [HttpDelete("{id:int}", Name = "DeleteProduct")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -137,7 +138,7 @@ namespace Ecommerce_Api.Controllers
             _db.SaveChanges();
             return NoContent();
         }
-
+        [Authorize(Roles = "Administrator")]
         [HttpPut("{id:int}", Name = "UpdateProduct")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

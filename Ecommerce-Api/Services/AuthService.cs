@@ -73,8 +73,6 @@ namespace Ecommerce_Api.Services
                 {
                     UserId = user.Id,
                     RoleId = defaultRoleId,
-                    AssignedDate = DateTime.UtcNow,
-                    IsActive = true
                 };
 
                 await _context.Set<UserRole>().AddAsync(userRole);
@@ -105,7 +103,7 @@ namespace Ecommerce_Api.Services
         private string CreateToken(User user)
         {
             
-            var roles = user.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.Name).ToList();
+            var roles = user.UserRoles.Select(ur => ur.Role.Name).ToList();
 
             // Determine role flags
             var isAdmin = roles.Contains("Administrator") ? "1" : "0";

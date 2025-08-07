@@ -4,6 +4,7 @@ using Ecommerce_Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecommerce_Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250807134222_removedacolumnfromuserrole")]
+    partial class removedacolumnfromuserrole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -89,7 +92,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 1,
                             Code = "ELEC",
-                            CreatedDate = new DateTime(2025, 8, 7, 18, 52, 56, 644, DateTimeKind.Local).AddTicks(3048),
+                            CreatedDate = new DateTime(2025, 8, 7, 18, 42, 21, 69, DateTimeKind.Local).AddTicks(5211),
                             Description = "Devices and gadgets",
                             Level = 0,
                             Name = "Electronics",
@@ -100,7 +103,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 2,
                             Code = "JEWEL",
-                            CreatedDate = new DateTime(2025, 8, 7, 18, 52, 56, 644, DateTimeKind.Local).AddTicks(3058),
+                            CreatedDate = new DateTime(2025, 8, 7, 18, 42, 21, 69, DateTimeKind.Local).AddTicks(5221),
                             Description = "Jewellery and accessories",
                             Level = 0,
                             Name = "Jewellery",
@@ -111,7 +114,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 3,
                             Code = "CLOTH",
-                            CreatedDate = new DateTime(2025, 8, 7, 18, 52, 56, 644, DateTimeKind.Local).AddTicks(3060),
+                            CreatedDate = new DateTime(2025, 8, 7, 18, 42, 21, 69, DateTimeKind.Local).AddTicks(5222),
                             Description = "Apparel and garments",
                             Level = 0,
                             Name = "Clothing",
@@ -122,7 +125,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 4,
                             Code = "WOMEN",
-                            CreatedDate = new DateTime(2025, 8, 7, 18, 52, 56, 644, DateTimeKind.Local).AddTicks(3061),
+                            CreatedDate = new DateTime(2025, 8, 7, 18, 42, 21, 69, DateTimeKind.Local).AddTicks(5224),
                             Description = "Women's clothing and accessories",
                             Level = 1,
                             Name = "Women",
@@ -134,7 +137,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 5,
                             Code = "MEN",
-                            CreatedDate = new DateTime(2025, 8, 7, 18, 52, 56, 644, DateTimeKind.Local).AddTicks(3063),
+                            CreatedDate = new DateTime(2025, 8, 7, 18, 42, 21, 69, DateTimeKind.Local).AddTicks(5225),
                             Description = "Men's clothing and accessories",
                             Level = 1,
                             Name = "Men",
@@ -146,7 +149,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 6,
                             Code = "TS",
-                            CreatedDate = new DateTime(2025, 8, 7, 18, 52, 56, 644, DateTimeKind.Local).AddTicks(3064),
+                            CreatedDate = new DateTime(2025, 8, 7, 18, 42, 21, 69, DateTimeKind.Local).AddTicks(5226),
                             Description = "Men's T-Shirts",
                             Level = 2,
                             Name = "T-Shirts",
@@ -406,6 +409,9 @@ namespace Ecommerce_Api.Migrations
 
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("AssignedDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("UserId", "RoleId");
 

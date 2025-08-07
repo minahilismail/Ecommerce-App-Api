@@ -47,22 +47,6 @@ namespace Ecommerce_Api.Controllers
             return Ok(token);
         }
 
-        [Authorize]
-        [HttpGet]
-        public IActionResult AuthenticatedOnlyEndPoint()
-        {
-
-            return Ok(new { Message = "You are authenticated!" });
-
-        }
-
-        [Authorize(Roles = "Administrator")]
-        [HttpGet("admin")]
-        public IActionResult AdminOnlyEndPoint()
-        {
-
-            return Ok(new { Message = "You are an admin!" });
-
-        }
+        
     }
 }

@@ -23,6 +23,7 @@ namespace Ecommerce_Api.Models
 
         [Required]
         public string Password { get; set; }
+        public bool IsActive { get; set; } = true;
 
         public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
         //public string? RefreshToken { get; set; }

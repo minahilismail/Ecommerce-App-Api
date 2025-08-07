@@ -52,8 +52,8 @@ namespace Ecommerce_Api.Data
 
         private int? GetCurrentUserId()
         {
-            // Get current user ID from HTTP context (assuming you have authentication)
-            var userIdClaim = _httpContextAccessor?.HttpContext?.User?.FindFirst("UserId")?.Value;
+            // Get current user ID from HTTP context
+            var userIdClaim = _httpContextAccessor?.HttpContext?.User?.FindFirst("userId")?.Value;
             return int.TryParse(userIdClaim, out var userId) ? userId : null;
         }
 
