@@ -20,6 +20,5 @@ namespace Ecommerce_Api.Models.Dto
         [MinLength(6)]
         public string Password { get; set; }
 
-        public int RoleId { get; set; } = 1; // Default to User role
     }
 }

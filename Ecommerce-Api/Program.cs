@@ -3,6 +3,7 @@ using Ecommerce_Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using Scalar.AspNetCore;
 using System.Text;
 
@@ -17,7 +18,13 @@ builder.Services.AddCors(options =>
                            .AllowAnyHeader()
                            .AllowAnyMethod());
 });
-builder.Services.AddControllers().AddNewtonsoftJson();
+// Configure Newtonsoft.Json to handle reference loops
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+{
+    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+    options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+});
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection")));

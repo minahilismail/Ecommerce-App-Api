@@ -23,54 +23,110 @@ namespace Ecommerce_Api.Services
             _configuration = configuration;
         }
 
-        public async Task<string?> LoginAsync(UserDto request)
+        public async Task<LoginResponseDto?> LoginAsync(LoginRequestDto request)
         {
             var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Username == request.Username && u.Email == request.Email);
+                .Include(u => u.UserRoles)
+                .ThenInclude(ur => ur.Role)
+                .FirstOrDefaultAsync(u => u.Email == request.Email);
 
-            if(user == null)
+            if (user == null)
             {
                 return null;
             }
-            
+
 
             if (new PasswordHasher<User>().VerifyHashedPassword(user, user.Password, request.Password) == PasswordVerificationResult.Failed)
             {
                 return null;
             }
 
-             
-            return CreateToken(user);
+            return new LoginResponseDto
+            {
+                Token = CreateToken(user)
+            };
         }
 
-        public async Task<User?> RegisterAsync(UserDto request)
+        public async Task<UserResponseDto?> RegisterAsync(RegisterRequestDto request)
         {
             if (await _context.Users.AnyAsync(u => u.Email == request.Email))
                 return null;
 
-            var user = new User();
-            var hashedPassword = new PasswordHasher<User>()
-                .HashPassword(user, request.Password);
-            user.Username = request.Username;
-            user.Name = request.Name;
-            user.Email = request.Email;
-            user.Password = hashedPassword;
+            // Start a transaction to ensure both User and UserRole are created together
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var user = new User();
+                var hashedPassword = new PasswordHasher<User>()
+                    .HashPassword(user, request.Password);
+                user.Username = request.Username;
+                user.Name = request.Name;
+                user.Email = request.Email;
+                user.Password = hashedPassword;
 
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
-            return user;
+                await _context.Users.AddAsync(user);
+                await _context.SaveChangesAsync(); // Save to get the UserId
+
+                // Assigning default role (User role with ID = 1)
+                var defaultRoleId = 1; // "User" role
+                var userRole = new UserRole
+                {
+                    UserId = user.Id,
+                    RoleId = defaultRoleId,
+                    AssignedDate = DateTime.UtcNow,
+                    IsActive = true
+                };
+
+                await _context.Set<UserRole>().AddAsync(userRole);
+                await _context.SaveChangesAsync();
+
+                await transaction.CommitAsync();
+
+                // Get the role name for the response
+                var role = await _context.Roles.FindAsync(defaultRoleId);
+                
+                return new UserResponseDto
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Username = user.Username,
+                    Email = user.Email,
+                    Roles = new List<string> { role?.Name ?? "User" },
+                    CreatedOn = user.CreatedOn ?? DateTime.UtcNow
+                };
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                return null;
+            }
         }
 
         private string CreateToken(User user)
         {
+            
+            var roles = user.UserRoles.Where(ur => ur.IsActive).Select(ur => ur.Role.Name).ToList();
+
+            // Determine role flags
+            var isAdmin = roles.Contains("Administrator") ? "1" : "0";
+            var isSeller = roles.Contains("Seller") ? "1" : "0";
+            var isUser = roles.Contains("User") ? "1" : "0";
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Role, user.RoleId.ToString())
+                new Claim("name", user.Name),
+                new Claim("email", user.Email),
+                new Claim("username", user.Username),
+                new Claim("userId", user.Id.ToString()),
 
+                new Claim("isAdmin", isAdmin),
+                new Claim("isSeller", isSeller),
+                new Claim("isUser", isUser)
             };
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetValue<string>("JwtSettings:Token")!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);

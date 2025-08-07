@@ -2,7 +2,7 @@
 
 namespace Ecommerce_Api.Models
 {
-    public class Role
+    public class Role : AuditableEntity
     {
         public int Id { get; set; }
 
@@ -10,12 +10,7 @@ namespace Ecommerce_Api.Models
         [MaxLength(50)]
         public string Name { get; set; }
 
-        [Required]
-        [MaxLength(20)]
-        public string Uid { get; set; }
-
-        public int? ParentRoleId { get; set; }
-        public Role? ParentRole { get; set; }
+        public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 
     }
 }

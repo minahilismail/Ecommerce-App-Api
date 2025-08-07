@@ -3,8 +3,9 @@ using System.Data;
 
 namespace Ecommerce_Api.Models
 {
-    public class User
+    public class User : AuditableEntity
     {
+
         public int Id { get; set; }
 
         [Required]
@@ -23,8 +24,7 @@ namespace Ecommerce_Api.Models
         [Required]
         public string Password { get; set; }
 
-        public int RoleId { get; set; } = 1;
-        public Role Role { get; set; }
+        public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
         //public string? RefreshToken { get; set; }
         //public DateTime RefreshTokenExpiryTime { get; set; }
 

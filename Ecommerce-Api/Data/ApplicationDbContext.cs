@@ -5,15 +5,57 @@ namespace Ecommerce_Api.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor httpContextAccessor) : base(options)
         {
-
+            _httpContextAccessor = httpContextAccessor;
         }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Status> Status { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
+
+        public override int SaveChanges()
+        {
+            SetAuditFields();
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            SetAuditFields();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void SetAuditFields()
+        {
+            var entries = ChangeTracker.Entries<AuditableEntity>();
+            var currentUserId = GetCurrentUserId();
+            var now = DateTime.UtcNow;
+
+            foreach (var entry in entries)
+            {
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        entry.Entity.CreatedOn = now;
+                        entry.Entity.CreatedBy = currentUserId;
+                        break;
+                    case EntityState.Modified:
+                        entry.Entity.UpdatedOn = now;
+                        entry.Entity.UpdatedBy = currentUserId;
+                        break;
+                }
+            }
+        }
+
+        private int? GetCurrentUserId()
+        {
+            // Get current user ID from HTTP context (assuming you have authentication)
+            var userIdClaim = _httpContextAccessor?.HttpContext?.User?.FindFirst("UserId")?.Value;
+            return int.TryParse(userIdClaim, out var userId) ? userId : null;
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -48,7 +90,23 @@ namespace Ecommerce_Api.Data
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // User configurations
+            // User-Role many-to-many relationship
+            modelBuilder.Entity<UserRole>()
+                .HasKey(ur => new { ur.UserId, ur.RoleId }); // Composite primary key
+
+            modelBuilder.Entity<UserRole>()
+                .HasOne(ur => ur.User)
+                .WithMany(u => u.UserRoles)
+                .HasForeignKey(ur => ur.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<UserRole>()
+                .HasOne(ur => ur.Role)
+                .WithMany(r => r.UserRoles)
+                .HasForeignKey(ur => ur.RoleId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Unique constraints
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
@@ -57,31 +115,8 @@ namespace Ecommerce_Api.Data
                 .HasIndex(u => u.Username)
                 .IsUnique();
 
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.Role);
-            
-            
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.Role)
-                .WithMany()
-                .HasForeignKey(u => u.RoleId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Role configurations
-            modelBuilder.Entity<Role>()
-                .HasIndex(r => r.Uid)
-                .IsUnique();
-
-            modelBuilder.Entity<Role>()
-                .HasOne(r => r.ParentRole);
-                
-
-            
-            modelBuilder.Entity<Role>()
-                .HasOne(r => r.ParentRole)
-                .WithMany()
-                .HasForeignKey(r => r.ParentRoleId)
-                .OnDelete(DeleteBehavior.Restrict);
+           
+           
 
             modelBuilder.Entity<Status>().HasData(
                 new Status
@@ -102,6 +137,12 @@ namespace Ecommerce_Api.Data
                     Name = "Deleted",
 
                 }
+            );
+
+            modelBuilder.Entity<Role>().HasData(
+                new Role { Id = 1, Name = "User" },
+                new Role { Id = 2, Name = "Seller" },
+                new Role { Id = 3, Name = "Administrator" }
             );
 
             modelBuilder.Entity<Category>().HasData(
@@ -221,13 +262,9 @@ namespace Ecommerce_Api.Data
                 }
             );
 
-            modelBuilder.Entity<Role>().HasData(
-                new Role { Id = 1, Name = "User", Uid = "USER", ParentRoleId = null },
-                new Role { Id = 2, Name = "Seller", Uid = "SELLER", ParentRoleId = 1 },
-                new Role { Id = 3, Name = "Administrator", Uid = "ADMINISTRATOR", ParentRoleId = 2 }
-            );
-
             
+
+
 
         }
 

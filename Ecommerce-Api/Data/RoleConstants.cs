@@ -2,8 +2,8 @@ namespace Ecommerce_Api.Models
 {
     public static class RoleConstants
     {
-        public const string User = "1";
-        public const string Seller = "2";
-        public const string Admin = "3";
+        public const string User = "User";
+        public const string Seller = "Seller";
+        public const string Admin = "Administrator";
     }
 }

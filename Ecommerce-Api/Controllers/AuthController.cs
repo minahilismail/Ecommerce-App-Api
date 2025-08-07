@@ -26,7 +26,7 @@ namespace Ecommerce_Api.Controllers
         
 
         [HttpPost("register")]
-        public async Task<ActionResult<User>> Register(UserDto request)
+        public async Task<ActionResult<UserResponseDto>> Register(RegisterRequestDto request)
         {
             var user = await _authService.RegisterAsync(request);
             if (user == null)
@@ -37,7 +37,7 @@ namespace Ecommerce_Api.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(UserDto request)
+        public async Task<ActionResult<LoginResponseDto>> Login(LoginRequestDto request)
         {
             var token = await _authService.LoginAsync(request);
             if (token is null)
@@ -56,7 +56,7 @@ namespace Ecommerce_Api.Controllers
 
         }
 
-        [Authorize(Roles = RoleConstants.Admin)]
+        [Authorize(Roles = "Administrator")]
         [HttpGet("admin")]
         public IActionResult AdminOnlyEndPoint()
         {

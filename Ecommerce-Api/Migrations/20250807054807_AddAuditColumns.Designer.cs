@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ecommerce_Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250806101920_addroles")]
-    partial class addroles
+    [Migration("20250807054807_AddAuditColumns")]
+    partial class AddAuditColumns
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,7 +37,13 @@ namespace Ecommerce_Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("CreatedOn")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -57,7 +63,13 @@ namespace Ecommerce_Api.Migrations
                     b.Property<int?>("StatusId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedOn")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -80,7 +92,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 1,
                             Code = "ELEC",
-                            CreatedDate = new DateTime(2025, 8, 6, 15, 19, 20, 70, DateTimeKind.Local).AddTicks(268),
+                            CreatedDate = new DateTime(2025, 8, 7, 10, 48, 7, 64, DateTimeKind.Local).AddTicks(4030),
                             Description = "Devices and gadgets",
                             Level = 0,
                             Name = "Electronics",
@@ -91,7 +103,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 2,
                             Code = "JEWEL",
-                            CreatedDate = new DateTime(2025, 8, 6, 15, 19, 20, 70, DateTimeKind.Local).AddTicks(280),
+                            CreatedDate = new DateTime(2025, 8, 7, 10, 48, 7, 64, DateTimeKind.Local).AddTicks(4040),
                             Description = "Jewellery and accessories",
                             Level = 0,
                             Name = "Jewellery",
@@ -102,7 +114,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 3,
                             Code = "CLOTH",
-                            CreatedDate = new DateTime(2025, 8, 6, 15, 19, 20, 70, DateTimeKind.Local).AddTicks(282),
+                            CreatedDate = new DateTime(2025, 8, 7, 10, 48, 7, 64, DateTimeKind.Local).AddTicks(4042),
                             Description = "Apparel and garments",
                             Level = 0,
                             Name = "Clothing",
@@ -113,7 +125,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 4,
                             Code = "WOMEN",
-                            CreatedDate = new DateTime(2025, 8, 6, 15, 19, 20, 70, DateTimeKind.Local).AddTicks(283),
+                            CreatedDate = new DateTime(2025, 8, 7, 10, 48, 7, 64, DateTimeKind.Local).AddTicks(4043),
                             Description = "Women's clothing and accessories",
                             Level = 1,
                             Name = "Women",
@@ -125,7 +137,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 5,
                             Code = "MEN",
-                            CreatedDate = new DateTime(2025, 8, 6, 15, 19, 20, 70, DateTimeKind.Local).AddTicks(285),
+                            CreatedDate = new DateTime(2025, 8, 7, 10, 48, 7, 64, DateTimeKind.Local).AddTicks(4045),
                             Description = "Men's clothing and accessories",
                             Level = 1,
                             Name = "Men",
@@ -137,7 +149,7 @@ namespace Ecommerce_Api.Migrations
                         {
                             Id = 6,
                             Code = "TS",
-                            CreatedDate = new DateTime(2025, 8, 6, 15, 19, 20, 70, DateTimeKind.Local).AddTicks(286),
+                            CreatedDate = new DateTime(2025, 8, 7, 10, 48, 7, 64, DateTimeKind.Local).AddTicks(4046),
                             Description = "Men's T-Shirts",
                             Level = 2,
                             Name = "T-Shirts",
@@ -158,6 +170,12 @@ namespace Ecommerce_Api.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(2000)
@@ -174,6 +192,12 @@ namespace Ecommerce_Api.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -237,25 +261,24 @@ namespace Ecommerce_Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("ParentRoleId")
+                    b.Property<int?>("UpdatedBy")
                         .HasColumnType("int");
 
-                    b.Property<string>("Uid")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ParentRoleId");
-
-                    b.HasIndex("Uid")
-                        .IsUnique();
 
                     b.ToTable("Roles");
 
@@ -263,22 +286,17 @@ namespace Ecommerce_Api.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "User",
-                            Uid = "USER"
+                            Name = "User"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Seller",
-                            ParentRoleId = 1,
-                            Uid = "SELLER"
+                            Name = "Seller"
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Administrator",
-                            ParentRoleId = 2,
-                            Uid = "ADMINISTRATOR"
+                            Name = "Administrator"
                         });
                 });
 
@@ -290,9 +308,21 @@ namespace Ecommerce_Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -327,6 +357,12 @@ namespace Ecommerce_Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -341,8 +377,11 @@ namespace Ecommerce_Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RoleId")
+                    b.Property<int?>("UpdatedBy")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -354,12 +393,46 @@ namespace Ecommerce_Api.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.HasIndex("RoleId");
-
                     b.HasIndex("Username")
                         .IsUnique();
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Ecommerce_Api.Models.UserRole", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("AssignedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("UserRole");
                 });
 
             modelBuilder.Entity("Ecommerce_Api.Models.Category", b =>
@@ -389,30 +462,38 @@ namespace Ecommerce_Api.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("Ecommerce_Api.Models.Role", b =>
-                {
-                    b.HasOne("Ecommerce_Api.Models.Role", "ParentRole")
-                        .WithMany()
-                        .HasForeignKey("ParentRoleId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("ParentRole");
-                });
-
-            modelBuilder.Entity("Ecommerce_Api.Models.User", b =>
+            modelBuilder.Entity("Ecommerce_Api.Models.UserRole", b =>
                 {
                     b.HasOne("Ecommerce_Api.Models.Role", "Role")
-                        .WithMany()
+                        .WithMany("UserRoles")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Ecommerce_Api.Models.User", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Role");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Ecommerce_Api.Models.Category", b =>
                 {
                     b.Navigation("SubCategories");
+                });
+
+            modelBuilder.Entity("Ecommerce_Api.Models.Role", b =>
+                {
+                    b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("Ecommerce_Api.Models.User", b =>
+                {
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

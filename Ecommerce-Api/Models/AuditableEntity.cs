@@ -2,9 +2,9 @@
 {
     public class AuditableEntity
     {
-        public virtual DateTime CreatedOn { get; set; }
-        public virtual DateTime CreatedBy { get; set; }
-        public virtual DateTime UpdatedOn { get; set; }
-        public virtual DateTime UpdatedBy { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public int? CreatedBy { get; set; }
+        public DateTime? UpdatedOn { get; set; }
+        public int? UpdatedBy { get; set; }
     }
 }
