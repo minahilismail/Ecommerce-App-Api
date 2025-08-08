@@ -1,4 +1,5 @@
 ﻿using Ecommerce_Api.Data;
+using Ecommerce_Api.Extensions;
 using Ecommerce_Api.Models;
 using Ecommerce_Api.Models.Dto;
 using Ecommerce_Api.Services;
@@ -44,6 +45,36 @@ namespace Ecommerce_Api.Controllers
             }).ToList();
 
             return Ok(productDTOs);
+        }
+
+        [HttpGet("paged-products")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Models.Dto.PagedResult<ProductDTO>>> GetProductsPaged([FromQuery] PaginationParameters parameters)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var query = _db.Products
+                .Include(p => p.Category)
+                .AsQueryable();
+
+            var pagedProducts = await query
+                .Select(p => new ProductDTO
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    Price = p.Price,
+                    Description = p.Description,
+                    Image = p.Image,
+                    CategoryId = p.CategoryId,
+                    CategoryName = p.Category != null ? p.Category.Name : null
+                })
+                .ToPagedResultAsync(parameters.PageNumber, parameters.PageSize);
+
+            return Ok(pagedProducts);
         }
 
         [HttpGet("{id:int}", Name = "GetProduct")]

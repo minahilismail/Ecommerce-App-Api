@@ -1,11 +1,13 @@
 ﻿using Ecommerce_Api.Data;
 using Ecommerce_Api.Models;
 using Ecommerce_Api.Models.Dto;
+using Ecommerce_Api.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Dynamic.Core;
 
 namespace Ecommerce_Api.Controllers
 {
@@ -18,6 +20,56 @@ namespace Ecommerce_Api.Controllers
         public CategoryController(ApplicationDbContext db)
         {
             _db = db;
+        }
+
+        [HttpGet("paged-categories")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<Models.Dto.PagedResult<CategoryDTO>>> GetCategoriesPaged(
+            [FromQuery] PaginationParameters parameters,
+            [FromQuery] int? statusId = null)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var query = _db.Categories
+                .Include(c => c.ParentCategory)
+                .AsQueryable();
+
+            // Applying status filter
+            if (statusId.HasValue)
+            {
+                query = query.Where(c => c.StatusId == statusId.Value);
+            }
+
+            // Apply pagination
+            var pagedCategories = await query
+                .Select(c => new CategoryDTO
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Code = c.Code,
+                    Description = c.Description,
+                    ParentCategoryId = c.ParentCategoryId,
+                    ParentCategoryName = c.ParentCategory != null ? c.ParentCategory.Name : null,
+                    StatusId = c.StatusId,
+                    Level = c.Level,
+                    SubCategories = c.SubCategories.ToList().Select(sub => new CategoryDTO
+                    {
+                        Id = sub.Id,
+                        Name = sub.Name,
+                        Code = sub.Code,
+                        Description = sub.Description,
+                        ParentCategoryId = sub.ParentCategoryId,
+                        StatusId = sub.StatusId,
+                        Level = sub.Level
+                    }).ToList()
+                })
+                .ToPagedResultAsync(parameters.PageNumber, parameters.PageSize);
+
+            return Ok(pagedCategories);
         }
 
         [HttpGet]
