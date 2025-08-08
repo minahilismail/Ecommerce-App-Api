@@ -1,9 +1,11 @@
 ﻿using Ecommerce_Api.Data;
 using Ecommerce_Api.Models;
 using Ecommerce_Api.Models.Dto;
+using Ecommerce_Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace Ecommerce_Api.Controllers
 {
@@ -11,11 +13,15 @@ namespace Ecommerce_Api.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
+        private readonly IStorageService _storageService;
         private readonly ApplicationDbContext _db;
+        private readonly IConfiguration _configuration;
 
-        public ProductController(ApplicationDbContext db)
+        public ProductController(ApplicationDbContext db, IStorageService storageService, IConfiguration configuration)
         {
             _db = db;
+            _storageService = storageService;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -78,39 +84,85 @@ namespace Ecommerce_Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<ProductDTO> CreateProduct([FromBody] ProductDTO productDTO)
+        public async Task<ActionResult<ProductDTO>> CreateProduct([FromForm] CreateProductDto createProductDto)
         {
-            
-            if(_db.Categories.FirstOrDefault(c => c.Id == productDTO.CategoryId) == null)
+            if (_db.Categories.FirstOrDefault(c => c.Id == createProductDto.CategoryId) == null)
             {
                 ModelState.AddModelError("CustomError", "Category does not exist!");
                 return BadRequest(ModelState);
             }
 
-            if (productDTO == null)
+            if (createProductDto == null)
             {
-                return BadRequest(productDTO);
+                return BadRequest("Product data is required.");
             }
 
-            if (productDTO.Id > 0)
+            string imageUrl = null;
+
+            // Upload image if provided
+            if (createProductDto.Image != null)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+                // Validate image file
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+                var fileExtension = Path.GetExtension(createProductDto.Image.FileName).ToLowerInvariant();
+
+                if (!allowedExtensions.Contains(fileExtension))
+                {
+                    ModelState.AddModelError("Image", "Only image files are allowed (jpg, jpeg, png");
+                    return BadRequest(ModelState);
+                }
+
+                // Check file size (max 5MB)
+                if (createProductDto.Image.Length > 5 * 1024 * 1024)
+                {
+                    ModelState.AddModelError("Image", "File size cannot exceed 5MB.");
+                    return BadRequest(ModelState);
+                }
+
+                try
+                {
+                    using (var stream = new MemoryStream())
+                    {
+                        await createProductDto.Image.CopyToAsync(stream);
+
+                        // Generate unique filename
+                        var fileName = $"product_{Guid.NewGuid()}{fileExtension}";
+                        var containerName = this._configuration["AzureStorage:ContainerName"];
+
+                        // Upload to Azure Blob Storage
+                        imageUrl = await _storageService.UploadAsync(stream.ToArray(), fileName,containerName);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("Image", "Failed to upload image. Please try again.");
+                    return BadRequest(ModelState);
+                }
             }
 
-           
             Product model = new()
             {
-                Title = productDTO.Title,
-                Price = productDTO.Price,
-                Description = productDTO.Description,
-                Image = productDTO.Image,
-                CategoryId = productDTO.CategoryId,
+                Title = createProductDto.Title,
+                Price = createProductDto.Price,
+                Description = createProductDto.Description,
+                Image = imageUrl,
+                CategoryId = createProductDto.CategoryId,
             };
 
             _db.Products.Add(model);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
 
-            productDTO.Id = model.Id;
+            var productDTO = new ProductDTO
+            {
+                Id = model.Id,
+                Title = model.Title,
+                Price = model.Price,
+                Description = model.Description,
+                Image = model.Image,
+                CategoryId = model.CategoryId,
+                CategoryName = _db.Categories.FirstOrDefault(c => c.Id == model.CategoryId)?.Name
+            };
+
             return CreatedAtRoute("GetProduct", new { id = model.Id }, productDTO);
         }
         [Authorize(Roles = "Administrator")]
@@ -142,36 +194,74 @@ namespace Ecommerce_Api.Controllers
         [HttpPut("{id:int}", Name = "UpdateProduct")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult UpdateProduct(int id, [FromBody] ProductDTO productDTO)
+        public async Task<IActionResult> UpdateProduct(int id, [FromForm] UpdateProductDto updateProductDto)
         {
-            if (productDTO == null || id != productDTO.Id)
+            if (updateProductDto == null || id != updateProductDto.Id)
             {
                 return BadRequest();
             }
 
-            // Validate category exists
-            if (_db.Products.FirstOrDefault(c => c.Id == productDTO.Id) == null)
-            {
-                ModelState.AddModelError("ProductId", "Product does not exist.");
-                return BadRequest(ModelState);
-            }
-
-            var product = _db.Products.FirstOrDefault(c => c.Id == productDTO.Id);
+            var product = _db.Products.FirstOrDefault(c => c.Id == id);
             if (product == null)
             {
                 ModelState.AddModelError("ProductId", "Product not found.");
                 return NotFound(ModelState);
             }
 
-            product.Title = productDTO.Title;
-            product.Price = productDTO.Price;
-            product.Description = productDTO.Description;
-            product.Image = productDTO.Image;
-            product.CategoryId = productDTO.CategoryId;
+            // Validate category exists
+            if (_db.Categories.FirstOrDefault(c => c.Id == updateProductDto.CategoryId) == null)
+            {
+                ModelState.AddModelError("CategoryId", "Category does not exist.");
+                return BadRequest(ModelState);
+            }
 
-            _db.SaveChanges();
+            string imageUrl = product.Image; // Keep existing image by default
+
+            // Upload new image if provided
+            if (updateProductDto.Image != null)
+            {
+                // Validate image file
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+                var fileExtension = Path.GetExtension(updateProductDto.Image.FileName).ToLowerInvariant();
+
+                if (!allowedExtensions.Contains(fileExtension))
+                {
+                    ModelState.AddModelError("Image", "Only image files are allowed (jpg, jpeg, png).");
+                    return BadRequest(ModelState);
+                }
+
+                if (updateProductDto.Image.Length > 5 * 1024 * 1024)
+                {
+                    ModelState.AddModelError("Image", "File size cannot exceed 5MB.");
+                    return BadRequest(ModelState);
+                }
+
+                try
+                {
+                    using (var stream = new MemoryStream())
+                    {
+                        await updateProductDto.Image.CopyToAsync(stream);
+
+                        var fileName = $"product_{id}_{Guid.NewGuid()}{fileExtension}";
+                        imageUrl = await _storageService.UploadAsync(stream.ToArray(), fileName);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("Image", "Failed to upload image. Please try again.");
+                    return BadRequest(ModelState);
+                }
+            }
+
+            product.Title = updateProductDto.Title;
+            product.Price = updateProductDto.Price;
+            product.Description = updateProductDto.Description;
+            product.Image = imageUrl; // Set the image URL, not the IFormFile
+            product.CategoryId = updateProductDto.CategoryId;
+
+            await _db.SaveChangesAsync();
             return NoContent();
-         }
+        }
 
         [HttpGet("category/{categoryId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -200,5 +290,59 @@ namespace Ecommerce_Api.Controllers
             return Ok(productDTOs);
         }
 
+        [Authorize(Roles = "Administrator")]
+        [HttpPost("uploadImage")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UploadProductImage([FromForm] UploadProductImageDto model)
+        {
+            var product = await _db.Products.FindAsync(model.ProductId);
+            if (product == null)
+            {
+                return NotFound("Product not found.");
+            }
+
+            if (model.Image == null)
+            {
+                return BadRequest("Image file is required.");
+            }
+
+            // Validate image file
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+            var fileExtension = Path.GetExtension(model.Image.FileName).ToLowerInvariant();
+
+            if (!allowedExtensions.Contains(fileExtension))
+            {
+                return BadRequest("Only image files are allowed (jpg, jpeg, png).");
+            }
+
+            if (model.Image.Length > 5 * 1024 * 1024)
+            {
+                return BadRequest("File size cannot exceed 5MB.");
+            }
+
+            try
+            {
+                using (var stream = new MemoryStream())
+                {
+                    await model.Image.CopyToAsync(stream);
+
+                    var fileName = $"product_{model.ProductId}_{Guid.NewGuid()}{fileExtension}";
+
+                    var pictureUrl = await _storageService.UploadAsync(stream.ToArray(), fileName);
+
+                    // Update the product image URL in the database
+                    product.Image = pictureUrl;
+                    await _db.SaveChangesAsync();
+
+                    return Ok(new { imageUrl = pictureUrl });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Failed to upload image.");
+            }
+        }
     }
 }
