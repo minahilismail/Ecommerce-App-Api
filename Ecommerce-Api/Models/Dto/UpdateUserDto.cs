@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Data;
 
 namespace Ecommerce_Api.Models.Dto
 {
-    public class UserDto
+    public class UpdateUserDto
     {
-        public int Id { get; set; }
 
         [Required]
         [MaxLength(100)]
@@ -20,10 +18,8 @@ namespace Ecommerce_Api.Models.Dto
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
-        public string Password { get; set; }
         public bool IsActive { get; set; } = true;
-        public string[]? Roles { get; set; }
 
+        public int[]? RoleIds { get; set; }
     }
 }
