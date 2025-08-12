@@ -1,5 +1,8 @@
 using Ecommerce_Api.Data;
+using Ecommerce_Api.Models.Dto;
 using Ecommerce_Api.Services;
+using Ecommerce_Api.Validators;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -25,6 +28,8 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
 });
 builder.Services.AddHttpContextAccessor();
+//builder.Services.AddScoped<IValidator<AddCategory>, AddCategoryRequestValidator>();
+builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly, includeInternalTypes: true);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection")));

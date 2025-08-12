@@ -1,12 +1,15 @@
 ﻿using Ecommerce_Api.Data;
+using Ecommerce_Api.Extensions;
 using Ecommerce_Api.Models;
 using Ecommerce_Api.Models.Dto;
-using Ecommerce_Api.Extensions;
+using Ecommerce_Api.Validators;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Dynamic.Core;
 
 namespace Ecommerce_Api.Controllers
@@ -16,10 +19,12 @@ namespace Ecommerce_Api.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly ApplicationDbContext _db;
+        private readonly IValidator<AddCategory> _validator;
 
-        public CategoryController(ApplicationDbContext db)
+        public CategoryController(ApplicationDbContext db, IValidator<AddCategory> validator)
         {
             _db = db;
+            _validator = validator;
         }
 
         [HttpGet("paged-categories")]
@@ -189,8 +194,19 @@ namespace Ecommerce_Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<CategoryDTO> CreateCategory([FromBody] CategoryDTO categoryDTO)
+        public ActionResult<AddCategory> CreateCategory([FromBody] AddCategory categoryDTO)
         {
+            
+            var validationResult = _validator.Validate(categoryDTO);
+            if (!validationResult.IsValid)
+            {
+                foreach (var error in validationResult.Errors)
+                {
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+                }
+                return BadRequest(ModelState);
+            }
+
             if (_db.Categories.FirstOrDefault(u => u.Name.ToLower() == categoryDTO.Name.ToLower()) != null)
             {
                 ModelState.AddModelError("CustomError", "Category already exists!");
@@ -200,11 +216,6 @@ namespace Ecommerce_Api.Controllers
             if (categoryDTO == null)
             {
                 return BadRequest(categoryDTO);
-            }
-
-            if (categoryDTO.Id > 0)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
             // Validate parent category exists if ParentCategoryId is provided
@@ -224,11 +235,11 @@ namespace Ecommerce_Api.Controllers
                 Code = categoryDTO.Code,
                 Description = categoryDTO.Description,
                 ParentCategoryId = categoryDTO.ParentCategoryId,
-                StatusId = categoryDTO.StatusId ?? 1,
-                Level = categoryDTO.Level,
+                //StatusId = categoryDTO.StatusId ?? 1,
+                //Level = categoryDTO.Level,
                 ParentCategory = categoryDTO.ParentCategoryId.HasValue
-                ? _db.Categories.FirstOrDefault(c => c.Id == categoryDTO.ParentCategoryId.Value)
-                : null,
+                    ? _db.Categories.FirstOrDefault(c => c.Id == categoryDTO.ParentCategoryId.Value)
+                    : null,
                 CreatedDate = DateTime.Now,
                 UpdatedDate = DateTime.Now
             };
@@ -236,7 +247,7 @@ namespace Ecommerce_Api.Controllers
             _db.Categories.Add(model);
             _db.SaveChanges();
 
-            categoryDTO.Id = model.Id;
+            //categoryDTO.Id = model.Id;
             return CreatedAtRoute("GetCategory", new { id = model.Id }, categoryDTO);
         }
 
