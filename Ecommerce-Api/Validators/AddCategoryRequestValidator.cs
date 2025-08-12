@@ -17,9 +17,6 @@ namespace Ecommerce_Api.Validators
                 .MaximumLength(500).WithMessage("Description cannot exceed 500 characters.");
             RuleFor(x => x.ParentCategoryId)
                 .GreaterThanOrEqualTo(0).WithMessage("Parent Category ID must be a non-negative integer.");
-            RuleFor(x => x.SubCategories)
-                .Must(subCategories => subCategories == null || subCategories.Count <= 10)
-                .WithMessage("Subcategories cannot exceed 10 items.");
         }
     }
 }
