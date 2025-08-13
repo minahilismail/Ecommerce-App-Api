@@ -189,7 +189,7 @@ namespace Ecommerce_Api.Controllers
 
             return Ok(categoryDTO);
         }
-        //[Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
